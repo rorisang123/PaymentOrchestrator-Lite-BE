@@ -1,4 +1,5 @@
 ﻿using PaymentOrchestrator_Lite_BE.Models.Enums;
+using System.Text.Json.Serialization;
 
 namespace PaymentOrchestrator_Lite_BE.Models
 {
@@ -7,6 +8,7 @@ namespace PaymentOrchestrator_Lite_BE.Models
         public Guid Id { get; set; } = Guid.NewGuid();
         public string CustomerId { get; set; } = string.Empty;
         public decimal Amount { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public PaymentStatus Status { get; set; } = PaymentStatus.Pending; // Pending, Confirmed
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
