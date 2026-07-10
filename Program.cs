@@ -27,6 +27,11 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<AuthService>();
+builder.Configuration["Jwt:Key"] = "SuperSecretKeyForDevelopmentOnly_ChangeThisInProduction_AtLeast32Chars!!!";
+builder.Configuration["Jwt:Issuer"] = "PaymentOrchestratorLite";
+builder.Configuration["Jwt:Audience"] = "PaymentOrchestratorLite";
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PaymentOrchestrator_Lite_BE.Models;
 using PaymentOrchestrator_Lite_BE.Services;
 
@@ -6,6 +7,7 @@ namespace PaymentOrchestrator_Lite_BE.Controllers
 {
     [ApiController]
     [Route("api/payments")]
+    [Authorize]
     public class PaymentsController : ControllerBase
     {
         private readonly IPaymentService _service;
