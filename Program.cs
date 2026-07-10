@@ -1,11 +1,16 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using PaymentOrchestrator_Lite_BE.Data;
 using PaymentOrchestrator_Lite_BE.Services;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<AuthService>();
+
 builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
@@ -27,7 +32,25 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+// JWT Config
 builder.Configuration["Jwt:Key"] = "SuperSecretKeyForDevelopmentOnly_ChangeThisInProduction_AtLeast32Chars!!!";
 builder.Configuration["Jwt:Issuer"] = "PaymentOrchestratorLite";
 builder.Configuration["Jwt:Audience"] = "PaymentOrchestratorLite";
@@ -49,6 +72,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
