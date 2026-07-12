@@ -1,0 +1,6 @@
+@PaymentOrchestrator_Lite_BE_HostAddress = http://localhost:5106
+
+GET {{PaymentOrchestrator_Lite_BE_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
