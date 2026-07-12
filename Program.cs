@@ -11,7 +11,11 @@ builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<AuthService>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddCors(options =>
 {
@@ -21,11 +25,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
-});
-
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

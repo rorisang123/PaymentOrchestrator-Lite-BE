@@ -26,6 +26,6 @@ namespace PaymentOrchestrator_Lite_BE.Controllers
         {
             var response = await _authService.Login(request);
             return response != null ? Ok(response) : Unauthorized(new { message = "Invalid email or password" });
-        }
+        }   
     }
 }

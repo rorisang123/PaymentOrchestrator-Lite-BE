@@ -8,8 +8,7 @@ namespace PaymentOrchestrator_Lite_BE.Models
         public Guid Id { get; set; } = Guid.NewGuid();
         public string CustomerId { get; set; } = string.Empty;
         public decimal Amount { get; set; }
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public PaymentStatus Status { get; set; } = PaymentStatus.Pending; // Pending, Confirmed
+        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 

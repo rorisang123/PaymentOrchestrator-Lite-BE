@@ -14,11 +14,11 @@ namespace PaymentOrchestrator_Lite_BE.Services
             _context = context;
         }
 
-        public async Task<Payment> CreatePaymentAsync(CreatePaymentRequest request)
+        public async Task<Payment> CreatePaymentAsync(CreatePaymentRequest request, string userId)
         {
             var payment = new Payment
             {
-                CustomerId = request.CustomerId,
+                CustomerId = userId,
                 Amount = request.Amount
             };
 
@@ -27,16 +27,19 @@ namespace PaymentOrchestrator_Lite_BE.Services
             return payment;
         }
 
-        public async Task<List<Payment>> GetAllPaymentsAsync()
+        public async Task<List<Payment>> GetAllPaymentsAsync(string userId)
         {
             return await _context.Payments
+                .Where(p => p.CustomerId == userId)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
         }
 
-        public async Task<Payment?> SimulateConfirmationAsync(Guid paymentId)
+        public async Task<Payment?> SimulateConfirmationAsync(Guid paymentId, string userId)
         {
-            var payment = await _context.Payments.FindAsync(paymentId);
+            var payment = await _context.Payments
+                .FirstOrDefaultAsync(p => p.Id == paymentId && p.CustomerId == userId);
+
             if (payment != null && payment.Status == PaymentStatus.Pending)
             {
                 payment.Status = PaymentStatus.Confirmed;
