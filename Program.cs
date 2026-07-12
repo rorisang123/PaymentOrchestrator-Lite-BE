@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PaymentOrchestrator_Lite_BE.Data;
 using PaymentOrchestrator_Lite_BE.Services;
@@ -7,7 +8,10 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseInMemoryDatabase("PaymentsDb");
+});
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<AuthService>();
 

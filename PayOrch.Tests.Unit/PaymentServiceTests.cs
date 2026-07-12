@@ -5,6 +5,7 @@ using PaymentOrchestrator_Lite_BE.Models.Enums;
 using PaymentOrchestrator_Lite_BE.Services;
 using Xunit;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace PaymentOrchestrator_Lite_BE.PayOrch.Tests.Unit
 {
     public class PaymentServiceTests
@@ -31,18 +32,24 @@ namespace PaymentOrchestrator_Lite_BE.PayOrch.Tests.Unit
         [Fact]
         public async Task GetAllPaymentsAsync_ShouldReturnOnlyUserPayments()
         {
-            using var context = GetDbContext();
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using var context = new AppDbContext(options);
+            var service = new PaymentService(context);
+
             context.Payments.AddRange(
                 new Payment { CustomerId = "user123", Amount = 100 },
-                new Payment { CustomerId = "user456", Amount = 200 }
+                new Payment { CustomerId = "user456", Amount = 200 },
+                new Payment { CustomerId = "user123", Amount = 300 }
             );
             await context.SaveChangesAsync();
 
-            var service = new PaymentService(context);
             var payments = await service.GetAllPaymentsAsync("user123");
 
-            Assert.Single(payments);
-            Assert.Equal("user123", payments[0].CustomerId);
+            Assert.Equal(2, payments.Count);
+            Assert.All(payments, p => Assert.Equal("user123", p.CustomerId));
         }
 
         [Fact]

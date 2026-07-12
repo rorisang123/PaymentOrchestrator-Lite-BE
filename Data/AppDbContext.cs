@@ -12,7 +12,6 @@ namespace PaymentOrchestrator_Lite_BE.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseInMemoryDatabase("PaymentsDb");
         }
     }
 }
