@@ -4,8 +4,8 @@ namespace PaymentOrchestrator_Lite_BE.Services
 {
     public interface IPaymentService
     {
-        Task<Payment> CreatePaymentAsync(CreatePaymentRequest request);
-        Task<List<Payment>> GetAllPaymentsAsync();
-        Task<Payment?> SimulateConfirmationAsync(Guid paymentId);
+        Task<Payment> CreatePaymentAsync(CreatePaymentRequest request, string userId);
+        Task<List<Payment>> GetAllPaymentsAsync(string userId);
+        Task<Payment?> SimulateConfirmationAsync(Guid paymentId, string userId);
     }
 }
